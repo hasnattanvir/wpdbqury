@@ -167,8 +167,63 @@ function htwp_wpdb_methods(){
         echo '<pre>';print_r($result);echo '</pre>';
     }
 
+
+    //wpdb::get_results($query,$type)
+    //$query - select query
+    //$type - ARRAY_A | ARRAY_N |OBJECT | OBJECT_K - default object
+    // associative array (ARRAY_A)
+    // No array (ARRAY_N)
+    // Object
+    // Object_K
+    $get_result = isset($_GET['get_result'])? $_GET['get_result'] : null;
+    if(!empty($get_result)){
+        // $result = $wpdb->get_results("SELECT * FROM $table");
+        //output
+        // Array
+        // (
+        //     [0] => stdClass Object
+        //         (
+        //             [id] => 8
+        //             [name] => Hasnat
+        //             [phone] => 5645544554
+        //             [email] => hasnatanvir014@gmail.com
+        //         )
+
+        //     [1] => stdClass Object
+        //         (
+        //             [id] => 9
+        //             [name] => jahid
+        //             [phone] => 5645544554
+        //             [email] => hasnat@gmail.com
+        //         )
+
+        //     [2] => stdClass Object
+        //         (
+        //             [id] => 10
+        //             [name] => jahid
+        //             [phone] => 5645544554
+        //             [email] => hasnat@gmail.com
+        //         )
+
+        // )
+
+
+        // $result = $wpdb->get_results("SELECT * FROM $table",'OBJECT_K');
+        // $result = $wpdb->get_results("SELECT * FROM $table",'ARRAY_N');
+        // $result = $wpdb->get_results("SELECT * FROM $table",'ARRAY_A');
+
+        // $result = $wpdb->get_results("SELECT * FROM $table LIMIT 2",'ARRAY_A');
+        // get two result 
+
+        $result = $wpdb->get_results("SELECT 'name', 'phone' FROM $table LIMIT 2",'ARRAY_A');
+        //get only name and phone
+
+
+        echo '<pre>';print_r($result);echo '</pre>';
+    }
    
 
 }
 
-add_action('init','htwp_wpdb_methods');
+// add_action('init','htwp_wpdb_methods');
+add_action('wp_head','htwp_wpdb_methods');
