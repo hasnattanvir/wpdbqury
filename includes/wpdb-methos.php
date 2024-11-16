@@ -223,6 +223,14 @@ function htwp_wpdb_methods(){
     }
    
 
+    // method wpdb::query($query)
+    $get_query = isset($_GET['get_querys'])? $_GET['get_querys'] : null;
+    if(!empty($get_query)){
+        $result = $wpdb->query("SELECT 'name', 'phone' FROM $table");
+
+        echo '<pre>';print_r($result);echo '</pre>';
+    }
+
 }
 
 // add_action('init','htwp_wpdb_methods');
