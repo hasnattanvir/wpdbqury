@@ -1,0 +1,66 @@
+<?php
+/**
+ * Plugin Name: Beatuty Booking
+ * Description: A booking system for Beatuty services.
+ * Version: 1.0.0
+ * Author: Your Name
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
+global $wpdb;
+
+echo '<pre>';
+$tablename = $wpdb->prefix.'nwbooking';
+echo '</pre>';
+
+// $wpdb->insert(
+//         $tablename,
+//         array(
+//         'service_name' => 'hasnat',
+//         'phone'=>'01625010631',
+//         'age'=>'31'
+//         ),
+//         array(
+//         '%s',
+//         '%s',
+//         '%d'
+//         )
+//     );
+
+// $wpdb->update(
+//         $tablename,
+//         array(
+//         'service_name' => 'new service',	// string
+//         'phone' => '4856456545',	// integer (number)
+//         'age'=>90
+//         ),
+//         array( 'ID' => 19 ),
+//         array(
+//         '%s',	// value1
+//         '%s',
+//         '%d'	// value2
+//         ),
+//         array( '%d' )
+//     );
+
+
+// Default usage.
+// $wpdb->delete(  $tablename, array( 'ID' => 28 ) );
+
+// Using where formatting.
+// $wpdb->delete( 'table', array( 'ID' => 1 ), array( '%d' ) );
+
+
+$query = "SELECT * FROM $tablename";
+$getdata = $wpdb->get_results($query, ARRAY_A);
+
+foreach ($getdata as $row) {
+    echo 'Name:'.$row['service_name'].'Phone'.$row['phone'];
+    echo'<br>';
+}
+
+
+// var_dump($getdata);

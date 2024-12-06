@@ -1,0 +1,81 @@
+<?php
+/**
+ * Plugin Name: Beatuty Booking
+ * Description: A booking system for Beatuty services.
+ * Version: 1.0.0
+ * Author: Your Name
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
+
+if(!function_exists('my_function')){
+    function my_function ($attr=array(),$content=null){
+        $test = "hasnat";
+        return $test;
+    }
+}
+
+// var_dump(my_function());
+if(!shortcode_exists('curd_list')){
+    add_shortcode('curd_list','my_function');
+}
+
+remove_shortcode('curd_list');
+
+
+// attr show and value dynamic
+if(!function_exists('my_function')){
+    function my_function ($atts=array(), $content=null ,$tag){
+
+       $attlist = array_change_key_case((array)$atts, CASE_LOWER);
+
+        $getattall = shortcode_atts(
+            array(
+                'class' => 'bangladesh2',
+                'id' => 'nobodyman'
+
+            ),$attlist,$tag
+        );
+
+
+        $test = '<div id="'.esc_html($getattall['id']).'" class="'.esc_html($getattall['class']).'">';
+        $test .= apply_filters('the_content', $content);
+        $test.='</div>';
+        return $test;
+    }
+}
+
+// var_dump(my_function());
+if(!shortcode_exists('curd_list')){
+    add_shortcode('curd_list','my_function');
+}
+
+
+// short code form use
+if(!function_exists('my_function')){
+    function my_function ($atts=array(), $content=null, $tag=''){
+        ob_start();
+        ?>
+
+        <form action="sname" method="post">
+            <label for="sname">Service Name</label>
+            <input type="text" name="sname" id="sname">
+            <br>
+            <label for="pnumber">Phone No</label>
+            <input type="text" name="pnumber" id="sname">
+            <br>
+        </form>
+      
+       <?php
+       $test = ob_get_clean();
+        return $test;
+    }
+}
+
+// var_dump(my_function());
+if(!shortcode_exists('curd_list')){
+    add_shortcode('curd_list','my_function');
+}

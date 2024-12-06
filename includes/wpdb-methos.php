@@ -1,5 +1,192 @@
 <?php
+function custom_post_type() {
+
+	$labels = array(
+		'name'                  => _x( 'Booking Beauti', 'Booking Beauti General Name', 'text_domain' ),
+		'singular_name'         => _x( 'Booking Beauti', 'Booking Beauti Singular Name', 'text_domain' ),
+		'menu_name'             => __( 'Booking Beauti', 'text_domain' ),
+		'name_admin_bar'        => __( 'Booking Beauti', 'text_domain' ),
+		'archives'              => __( 'Item Archives', 'text_domain' ),
+		'attributes'            => __( 'Item Attributes', 'text_domain' ),
+		'parent_item_colon'     => __( 'Parent Item:', 'text_domain' ),
+		'all_items'             => __( 'All Items', 'text_domain' ),
+		'add_new_item'          => __( 'Add New Item', 'text_domain' ),
+		'add_new'               => __( 'Add New', 'text_domain' ),
+		'new_item'              => __( 'New Item', 'text_domain' ),
+		'edit_item'             => __( 'Edit Item', 'text_domain' ),
+		'update_item'           => __( 'Update Item', 'text_domain' ),
+		'view_item'             => __( 'View Item', 'text_domain' ),
+		'view_items'            => __( 'View Items', 'text_domain' ),
+		'search_items'          => __( 'Search Item', 'text_domain' ),
+		'not_found'             => __( 'Not found', 'text_domain' ),
+		'not_found_in_trash'    => __( 'Not found in Trash', 'text_domain' ),
+		'featured_image'        => __( 'Featured Image', 'text_domain' ),
+		'set_featured_image'    => __( 'Set featured image', 'text_domain' ),
+		'remove_featured_image' => __( 'Remove featured image', 'text_domain' ),
+		'use_featured_image'    => __( 'Use as featured image', 'text_domain' ),
+		'insert_into_item'      => __( 'Insert into item', 'text_domain' ),
+		'uploaded_to_this_item' => __( 'Uploaded to this item', 'text_domain' ),
+		'items_list'            => __( 'Items list', 'text_domain' ),
+		'items_list_navigation' => __( 'Items list navigation', 'text_domain' ),
+		'filter_items_list'     => __( 'Filter items list', 'text_domain' ),
+	);
+	$args = array(
+		'label'                 => __( 'Booking Beauti', 'text_domain' ),
+		'description'           => __( 'Booking Beauti Description', 'text_domain' ),
+		'labels'                => $labels,
+		'supports'              => array( 'title', 'editor' ),
+		'taxonomies'            => array( 'beauti_category'),
+		'hierarchical'          => false,
+		'public'                => true,
+		'show_ui'               => true,
+		'show_in_menu'          => true,
+		'menu_position'         => 5,
+        'menu_icon'             => 'dashicons-buddicons-topics',
+		'show_in_admin_bar'     => true,
+		'show_in_nav_menus'     => true,
+		'can_export'            => true,
+		'has_archive'           => true,
+		'exclude_from_search'   => false,
+		'publicly_queryable'    => true,
+		'capability_type'       => 'page',
+	);
+	register_post_type( 'booking_beauti', $args );
+
+}
+
+function register_custom_taxonomy() {
+
+	$labels = array(
+		'name'              => _x( 'Beauti Category', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Beauti Category', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Category', 'textdomain' ),
+		'all_items'         => __( 'All Category', 'textdomain' ),
+		'view_item'         => __( 'View Category', 'textdomain' ),
+		'parent_item'       => __( 'Parent Category', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Category:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Category', 'textdomain' ),
+		'update_item'       => __( 'Update Category', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Category', 'textdomain' ),
+		'new_item_name'     => __( 'New Category Name', 'textdomain' ),
+		'not_found'         => __( 'No Category Found', 'textdomain' ),
+		'back_to_items'     => __( 'Back to Category', 'textdomain' ),
+		'menu_name'         => __( 'Beauti Category', 'textdomain' ),
+	);
+
+	$args = array(
+		'labels'            => $labels,
+		'hierarchical'      => true,
+		'public'            => true,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'beauti_category' ),
+		'show_in_rest'      => true,
+	);
+
+
+	register_taxonomy( 'beauti_category', 'booking_beauti', $args );
+
+}
+
+add_action( 'init', 'custom_post_type', 0 );
+add_action( 'init', 'register_custom_taxonomy', 0 );
+
+
+// chek unique and set post data
+if(!function_exists('bb_others_setting')){
+    function bb_others_setting($post_id){
+        if(array_key_exists('phonenumber',$_POST)){
+            update_post_meta(
+                $post_id,
+                'bbphone_unique',
+                $_POST['phonenumber']
+            );
+        }
+
+        if(array_key_exists('emailaddress',$_POST)){
+            update_post_meta(
+                $post_id,
+                'bbemail_unique',
+                $_POST['emailaddress']
+            );
+        }
+    }
+
+}
+add_action('save_post','bb_others_setting');
+
+//add input box for admin deshbox
+if(!function_exists('bbmobleinput')){
+    function bbmobleinput($post){
+
+        ?>
+        <label for="pno">Phone Number</label>
+        <input type="text" value="<?php echo get_post_meta($post->ID,'bbphone_unique',true); ?>" name="phonenumber" id="pno">
+        <br>
+        <label for="eadd">Email Address</label>
+        <input type="email" value="<?php echo get_post_meta($post->ID,'bbemail_unique',true); ?>" name="emailaddress" id="eadd">
+        
+        <?php
+    }
+}
+
+//register metabox
+if(!function_exists('bb_metabox')){
+    function bb_metabox(){
+        add_meta_box(
+            'bb_box_id',
+            'Other Settings',
+            'bbmobleinput',
+            'booking_beauti'
+        );
+    }
+}
+add_action('add_meta_boxes','bb_metabox');
+
+
+// short code form use
+if(!function_exists('my_function')){
+    function my_function ($atts=array(), $content=null, $tag=''){
+        ob_start();
+
+        $datainfo = new wp_query(array(
+            'post_type'=>'booking_beauti',
+            'posts_per_page'=> 8
+        ));
+        
+        while($datainfo->have_posts()){
+            $datainfo->the_post();
+        ?>
+
+        <div class="list_Box">
+            <h3><?php esc_html(the_title()); ?></h3>
+            <p><?php esc_html(the_content()); ?></p>
+            <p>
+               Phone Number: <?php echo  esc_html(get_post_meta(get_the_ID(),'bbphone_unique',true)); ?>
+            </p>
+            <p>
+               Email Address: <?php echo  esc_html(get_post_meta(get_the_ID(),'bbemail_unique',true)); ?>
+            </p>
+        </div>
+      
+       <?php
+        }
+       $test = ob_get_clean();
+        return $test;
+    }
+}
+
+// var_dump(my_function());
+if(!shortcode_exists('curd_list')){
+    add_shortcode('curd_list','my_function');
+}
+
+
 function htwp_wpdb_methods(){
+
+    // Register Custom Post Type
+
     // insert($table,$data,$format)
 
     //global object access
@@ -7,22 +194,19 @@ function htwp_wpdb_methods(){
 
     $table = $wpdb->prefix.'simplecurd';
     
-    // $can_insert = isset($_GET['insert']) ? $_GET['insert'] : null;
-    // if(empty($can_insert)){
-    //     return;
-    // }
-
-
-    // $data = array(
-    //     'name'=>'Hasnat',
-    //     'phone'=>'5645544554',
-    //     'email'=>'hasnat@gmail.com'
-    // );
-    // $wpdb->insert(
-    //     $table,
-    //     $data,
-    // );
-    // echo 'data inserted';
+    $can_insert = isset($_GET['insert']) ? $_GET['insert'] : null;
+    if(!empty($can_insert)){
+        $data = array(
+            'name'=>'selem kahn',
+            'phone'=>'445546456',
+            'email'=>'selemkahn@gmail.com'
+        );
+        $wpdb->insert(
+            $table,
+            $data,
+        );
+        echo 'data inserted';
+    }
 
 
 
@@ -229,6 +413,19 @@ function htwp_wpdb_methods(){
         $result = $wpdb->query("SELECT 'name', 'phone' FROM $table");
 
         echo '<pre>';print_r($result);echo '</pre>';
+    }
+
+
+    //method wpdb::prepare($query, $args)
+    // $query - any sql query
+    // $args - array of values
+    $get_dataselect = isset($_GET['selectdata'])? $_GET['selectdata'] : null;
+    if(!empty($get_dataselect)){
+        $sql = $wpdb->prepare(
+            "SELECT `name` FROM $table WHERE `phone` = %d AND `email` = `%s`",458751
+        );
+        $result = $wpdb->get_var($sql);
+        echo 'Result is:'.$result;
     }
 
 }
